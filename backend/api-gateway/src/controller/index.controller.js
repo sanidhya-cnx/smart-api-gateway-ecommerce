@@ -1,5 +1,8 @@
+const {getGatewayStatus} = require('../services/index.service')
 function healthCheck(req, res) {
-    res.send('API Gateway is running...');
+    const data = getGatewayStatus();
+
+    res.status(500).json(data);
 }
 
 module.exports = {
