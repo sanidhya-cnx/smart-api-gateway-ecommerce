@@ -2,12 +2,14 @@ const express = require('express');
 
 const loggerMiddleware = require('./middlewares/logger.middleware');
 const errorMiddleware = require('./middlewares/error.middleware');
+const requestIDMiddleware = require('./middlewares/requestID.middleware');
 const indexRouter = require('./routes');
 
 const app = express();
 
-app.use(loggerMiddleware);
 app.use(express.json());
+app.use(requestIDMiddleware);
+app.use(loggerMiddleware);
 app.use('/', indexRouter);
 app.use(errorMiddleware);
 
