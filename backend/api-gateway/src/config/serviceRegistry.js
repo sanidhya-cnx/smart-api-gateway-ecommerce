@@ -2,7 +2,7 @@ const services = {
 
     users: {
         name: "User Service",
-        url: "http://localhost:5001"
+        url: process.env.USER_SERVICE_URL
     }
 
 };
