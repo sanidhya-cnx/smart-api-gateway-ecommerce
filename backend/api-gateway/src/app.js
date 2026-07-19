@@ -12,6 +12,9 @@ const app = express();
 app.use(express.json());
 app.use(requestIDMiddleware);
 app.use(loggerMiddleware);
+app.use("/auth", require("./routes/auth.routes"));
+app.use("/test", require("./routes/test.routes"));
+
 app.use(dynamicProxy);
 app.use('/', indexRouter);
 app.use(errorMiddleware);
