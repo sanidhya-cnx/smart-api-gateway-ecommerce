@@ -1,7 +1,17 @@
+require("dotenv").config();
 const app = require('./app');
+const connectDB = require("./config/db");
+const User = require("./models/user.model");
+
+console.log(User.modelName);
 
 const PORT = process.env.PORT || 5001;
 
-app.listen(PORT,() => {
-    console.log(`User service is running on port : ${PORT}`);
-});
+const startServer = async () => {
+    await connectDB();
+    app.listen(PORT, () => {
+        console.log(`🚀 User Service running on port ${PORT}`);
+    });
+};
+
+startServer();

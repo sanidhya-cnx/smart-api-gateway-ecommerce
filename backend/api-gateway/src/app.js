@@ -15,7 +15,6 @@ app.use(rateLimiter);
 app.use(requestIDMiddleware);
 app.use(loggerMiddleware);
 app.use("/auth", require("./routes/auth.routes"));
-app.use("/test", require("./routes/test.routes"));
 
 app.use(dynamicProxy);
 app.use('/', indexRouter);
