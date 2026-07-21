@@ -17,7 +17,7 @@ const updateUser = async (id, userData) => {
         id,
         userData,
         {
-            new: true,
+            returnDocument: "after",
             runValidators: true
         }
     );
