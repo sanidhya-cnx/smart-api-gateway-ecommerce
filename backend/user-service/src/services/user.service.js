@@ -1,8 +1,9 @@
 const User = require("../models/user.model");
 
-const getAllUsers = async (page, limit, filters) => {
+const getAllUsers = async (page, limit, filters, sort) => {
     const skip = (page - 1) * limit;
     const users = await User.find(filters)
+        .sort(sort)
         .skip(skip)
         .limit(limit);
     const totalUsers = await User.countDocuments(filters);

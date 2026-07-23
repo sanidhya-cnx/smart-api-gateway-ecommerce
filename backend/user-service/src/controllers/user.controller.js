@@ -6,14 +6,28 @@ const getAllUsers = asyncHandler(async (req, res) => {
     const page = Math.max(1, Number(req.query.page) || 1);
     const limit = Math.max(1, Number(req.query.limit) || 10);
     const filters = {};
-    if(req.query.name){
-        filters.name = req.query.name;
-    }
-    if(req.query.email){
-        filters.email = req.query.email;
+    if(req.query.search){
+        filters.$or = [
+            {name: {$regex: req.query.search, $options: "i"}},
+            {email: {$regex: req.query.search, $options: "i"}}
+        ]
     }
 
-    const { users, totalUsers } = await userService.getAllUsers(page, limit, filters);
+    const allowedSortFields = [
+        "name",
+        "email",
+        "createdAt"
+    ];
+    let sort ="-createdAt";
+    if(req.query.sort){
+        const field = req.query.sort.replace("-", "");
+        if(allowedSortFields.includes(field)){
+            sort = req.query.sort;
+        }
+        
+    }
+
+    const { users, totalUsers } = await userService.getAllUsers(page, limit, filters, sort);
     res.status(200).json({
         success: true,
         page,
