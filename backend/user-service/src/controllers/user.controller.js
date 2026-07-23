@@ -13,7 +13,7 @@ const getAllUsers = asyncHandler(async (req, res) => {
         filters.email = req.query.email;
     }
 
-    const { users, totalUsers } = await userService.getAllUsers(page, limit);
+    const { users, totalUsers } = await userService.getAllUsers(page, limit, filters);
     res.status(200).json({
         success: true,
         page,
