@@ -5,7 +5,7 @@ const dynamicProxy = createProxyMiddleware({
     changeOrigin: true,
 
     router: (req) => {
-        const serviceName = req.url.split("/")[1];
+        const serviceName = req.path.split("/")[1];
 
         const service = getService(serviceName);
 

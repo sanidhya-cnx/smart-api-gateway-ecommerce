@@ -1,7 +1,15 @@
 const User = require("../models/user.model");
 
-const getAllUsers = async () => {
-    return await User.find();
+const getAllUsers = async (page, limit) => {
+    const skip = (page - 1) * limit;
+    const users = await User.find()
+        .skip(skip)
+        .limit(limit);
+    const totalUsers = await User.countDocuments();
+    return {
+        users,
+        totalUsers
+    };
 };
 
 const getUserById = async (id) => {
