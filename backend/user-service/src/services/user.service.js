@@ -1,4 +1,5 @@
 const User = require("../models/user.model");
+const BadRequestError = require("../errors/BadRequestError");
 
 const getAllUsers = async (page, limit, filters, sort) => {
     const skip = (page - 1) * limit;
@@ -18,6 +19,10 @@ const getUserById = async (id) => {
 };
 
 const createUser = async (userData) => {
+    const isUserAlreadyExists = await User.findOne({email: userData.email});
+    if(isUserAlreadyExists){
+        throw new BadRequestError("User already exists");
+    }
     return await User.create(userData);
 };
 
