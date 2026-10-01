@@ -70,7 +70,16 @@ const createUser = asyncHandler(async (req, res) => {
 });
 
 const updateUser = asyncHandler(async (req, res) => {
+    if(req.user.role !== "admin" && req.user.id !== req.params.id){
+        return res.status(403).json({
+            success: false,
+            message: "You do not have permission to update this user"
+        })
+    }
         const user = await userService.updateUser(req.params.id, req.body);
+        if(!user){
+            throw new NotFoundError("User not found");
+        }
         res.status(200).json(
             new ApiResponse(
                 true,
@@ -94,10 +103,46 @@ const deleteUser = asyncHandler(async (req, res) => {
     );
 });
 
+const getUserByEmail = asyncHandler(async (req, res) => {
+    const user = await userService.getUserByEmail(
+        req.body.email
+    );
+    if (!user) {
+        throw new NotFoundError("User not found");
+    }
+    res.status(200).json(
+        new ApiResponse(
+            true,
+            "User fetched successfully",
+            user
+        )
+    );
+});
+
+const getProfile = asyncHandler(async (req, res) => {
+
+    const user = await userService.getUserById(
+        req.user.id
+    );
+
+    if (!user) {
+        throw new NotFoundError("User not found");
+    }
+
+    res.status(200).json({
+        success: true,
+        message: "Profile fetched successfully",
+        data: user
+    });
+
+});
+
 module.exports = {
     getAllUsers,
     getUserById,
     createUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    getUserByEmail,
+    getProfile
 };

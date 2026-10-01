@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 
 const userSchema = new mongoose.Schema(
     {
@@ -16,6 +17,19 @@ const userSchema = new mongoose.Schema(
             unique: true,
             lowercase: true,
             trim: true
+        },
+
+        password: {
+            type: String,
+            required: true,
+            minlength: 6,
+            select: false
+        },
+
+        role: {
+            type: String,
+            enum: ["user", "admin"],
+            default: "user"
         }
     },
     {
@@ -23,6 +37,18 @@ const userSchema = new mongoose.Schema(
     }
 );
 
-const User = mongoose.model("User", userSchema);
 
+userSchema.pre("save", async function () {
+
+    console.log("🔥 Pre-save hook running");
+
+    if (!this.isModified("password")) {
+        return;
+    }
+
+    this.password = await bcrypt.hash(this.password, 10);
+
+});
+
+const User = mongoose.model("User", userSchema);
 module.exports = User;
