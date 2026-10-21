@@ -1,5 +1,5 @@
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+const {generateAccessToken, generateRefreshToken} = require("../utils/token");
 
 
 const userClient = require("../utils/userClient");
@@ -25,6 +25,20 @@ const login = async (email, password) => {
         error.statusCode = 401;
         throw error;
     }
+
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+
+    return {
+        accessToken,
+        refreshToken,
+        user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role
+        }
+    };
 
     const token = jwt.sign(
         {
@@ -76,6 +90,42 @@ const register = async (userData) => {
     return {
         token,
         user
+    };
+};
+
+const refreshAccessToken = async (refreshToken) => {
+
+    let decoded;
+
+    try {
+
+        decoded = jwt.verify(
+            refreshToken,
+            process.env.JWT_REFRESH_SECRET
+        );
+
+    } catch (error) {
+
+        throw new UnauthorizedError(
+            "Invalid or expired refresh token"
+        );
+
+    }
+
+    const user =
+        await userClient.getUserById(decoded.id);
+
+    if (!user) {
+        throw new UnauthorizedError(
+            "User not found"
+        );
+    }
+
+    const accessToken =
+        generateAccessToken(user);
+
+    return {
+        accessToken
     };
 };
 
