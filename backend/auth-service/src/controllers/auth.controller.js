@@ -1,4 +1,12 @@
 const authService = require("../services/auth.service");
+const asyncHandler = require("../../../api-gateway/src/utils/asyncHandler");
+
+const {
+
+    rotateRefreshToken
+
+} = require("../services/refresh.service");
+const userClient = require("../utils/userClient");
 
 const login = async (req, res, next) => {
 
@@ -37,7 +45,32 @@ const register = async (req, res, next) => {
     }
 };
 
+const refresh = asyncHandler(async (req, res) => {
+
+    const { refreshToken } = req.body;
+
+    const tokens = await rotateRefreshToken(
+
+        refreshToken,
+
+        userClient
+
+    );
+
+    res.status(200).json({
+
+        success: true,
+
+        message: "Tokens refreshed successfully",
+
+        data: tokens
+
+    });
+
+});
+
 module.exports = {
     login,
-    register
+    register,
+    refresh
 };

@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
-const {generateAccessToken, generateRefreshToken} = require("../utils/token");
-
+const { generateAccessToken } = require("../utils/token");
+const { createRefreshToken } = require("./refreshToken.service");
 
 const userClient = require("../utils/userClient");
 
@@ -27,7 +27,7 @@ const login = async (email, password) => {
     }
 
     const accessToken = generateAccessToken(user);
-    const refreshToken = generateRefreshToken(user);
+    const refreshToken = await createRefreshToken(user._id);
 
     return {
         accessToken,
@@ -39,29 +39,6 @@ const login = async (email, password) => {
             role: user.role
         }
     };
-
-    const token = jwt.sign(
-        {
-            id: user._id,
-            email: user.email,
-            role: user.role
-        },
-        process.env.JWT_SECRET,
-        {
-            expiresIn: process.env.JWT_EXPIRES_IN
-        }
-    );
-
-    return {
-        token,
-        user: {
-            id: user._id,
-            name: user.name,
-            email: user.email,
-            role: user.role
-        }
-    };
-
 };
 
 const register = async (userData) => {
@@ -131,5 +108,6 @@ const refreshAccessToken = async (refreshToken) => {
 
 module.exports = {
     login,
-    register
+    register,
+    refreshAccessToken
 };
