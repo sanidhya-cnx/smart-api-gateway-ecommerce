@@ -28,7 +28,25 @@ const createRefreshToken = async (userId) => {
 };
 
 
+const revokeRefreshToken = async (rawToken) => {
+  if (!rawToken) {
+    return;
+  }
+  const tokenHash = hashRefreshToken(rawToken);
+  await RefreshToken.findOneAndUpdate(
+    {
+      tokenHash,
+      revokedAt: null
+    },
+    {
+      $set: {
+        revokedAt: new Date()
+      }
+    }
+  );
+};
 
 module.exports = {
-    createRefreshToken
+    createRefreshToken,
+    revokeRefreshToken
 };
