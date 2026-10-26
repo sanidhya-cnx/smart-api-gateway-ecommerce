@@ -7,6 +7,10 @@ const services = {
     auth: {
         name: "Auth Service",
         url: process.env.AUTH_SERVICE_URL
+    },
+    products: {
+        name: "Product Service",
+        url: process.env.PRODUCT_SERVICE_URL
     }
 
 };

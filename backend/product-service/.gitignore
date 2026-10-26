@@ -1,0 +1,15 @@
+# Environment variables
+.env
+.env.*
+
+# Allow an example environment file
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
