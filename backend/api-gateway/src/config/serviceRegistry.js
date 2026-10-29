@@ -15,6 +15,10 @@ const services = {
     inventory: {
         name: "Inventory Service",
         url: process.env.INVENTORY_SERVICE_URL
+    },
+    orders:{
+        name: "Order Service",
+        url: process.env.ORDER_SERVICE_URL
     }
 
 };
