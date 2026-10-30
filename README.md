@@ -1,129 +1,46 @@
 # Smart API Gateway for E-Commerce
+A scalable, modular e-commerce backend built using Node.js, Express.js, MongoDB, and Microservices Architecture.
 
-   A production-ready microservices-based e-commerce backend built using the MERN stack. This project demonstrates how an API Gateway manages communication between multiple backend services while providing authentication, authorization, request routing, caching, logging, monitoring, and other production-grade features.
+The project demonstrates how independent backend services communicate through a centralized API Gateway to handle authentication, users, products, inventory, and orders.
 
-# Tech Stack
-Frontend
+The goal is to build a production-oriented backend while exploring real-world distributed system concepts such as service discovery, dynamic routing, inter-service communication, centralized error handling, stock management, and distributed transactions.
 
-* React
-* React Router
-* Axios
-* Tailwind CSS
+# Key Design Principles
+* Independent services for different business domains.
+* Centralized API Gateway for client requests.
+* Independent MongoDB databases for each service.
+* HTTP-based inter-service communication.
+* Centralized request logging and error handling.
+* Separation of business logic using controllers and services.
+* Scalable and maintainable backend architecture.
 
-Backend
+                     CLIENT
+                        |
+                        |
+                 API GATEWAY
+                   Port 3000
+                        |
+          +-------------+-------------+
+          |             |             |
+     Auth Middleware  Rate Limiter  Request Logger
+          |
+          |
+     Dynamic Routing
+          |
+    +-----+----------------+----------------------+------------------------+--------------------+
+    |                      |                      |                        |                    |
+    v                      v                      v                        v                    v
+ Auth Service:5002   User Service:5001   Product Service:5003   Inventory Service:5004   Order Service:5005
+    |                      |                      |                        |                    |
+    v                      v                      v                        v               +----+----+
+ Auth DB                User DB               Product DB             Inventory DB          |         |
+                                                                                           v         v
+                                                                                     Product     Inventory 
+                                                                                     Service      Service
 
-* Node.js
-* Express.js
-
-Database
-
-* MongoDB
-* Mongoose
-
-Authentication
-
-* JWT
-* bcrypt
-
-Caching
-
-* Redis
-
-Monitoring
-
-* Prometheus
-* Grafana
-
-Logging
-
-* Morgan
-* Winston
-
-Deployment
-
-* Docker
-* Docker Compose
-
-# Architecture
-                 React Frontend
-                       │
-                       ▼
-                 API Gateway
-                       │
- ──────────────────────────────────────────────
- │        │        │        │        │
- ▼        ▼        ▼        ▼        ▼
-User   Product   Cart    Order   Payment
-Service Service Service Service  Service
- │        │        │        │        │
- ▼        ▼        ▼        ▼        ▼
-MongoDB MongoDB MongoDB MongoDB MongoDB
-
-# Folder Structure
-
-├─── src/
-│    ├─── api-gateway/                 ← API Gateway
-│    │    ├─── config/                ← Gateway configuration
-│    │    │    └─── cors.js
-│    │    ├─── controllers/           ← Request controllers
-│    │    │    ├─── authController.js
-│    │    │    └─── rateLimit.js
-│    │    ├───middlewares/           ← Middleware functions
-│    │    │    ├─── authMiddleware.js
-│    │    │    ├─── cacheMiddleware.js
-│    │    │    ├─── loggingMiddleware.js
-│    │    │    ├─── rateLimitMiddleware.js
-│    │    │    ├─── responseMiddleware.js
-│    │    │    ├─── securityMiddleware.js
-│    │    │    └─── validationMiddleware.js
-│    │    ├─── routes/                ← Request routes
-│    │    │    ├─── authRoutes.js
-│    │    │    ├─── productRoutes.js
-│    │    │    ├─── cartRoutes.js
-│    │    │    ├─── orderRoutes.js
-│    │    │    ├─── paymentRoutes.js
-│    │    │    ├─── proxyRoutes.js
-│    │    │    └─── healthRoutes.js
-│    │    ├─── services/              ← Service integrations
-│    │    │    ├─── authService.js
-│    │    │    ├─── productService.js
-│    │    │    ├─── cartService.js
-│    │    │    ├─── orderService.js
-│    │    │    ├─── paymentService.js
-│    │    │    ├─── notificationService.js
-│    │    │    └─── searchService.js
-│    │    ├─── utils/                 ← Utility functions
-│    │    │    ├─── responseHandler.js
-│    │    │    └─── tokenHandler.js
-│    │    ├─── index.js               ← Main entry point
-│    │    └─── app.js
-│    ├─── auth-service/              ← Authentication service
-│    ├─── product-service/           ← Product service
-│    ├─── cart-service/              ← Cart service
-│    ├─── order-service/             ← Order service
-│    ├─── payment-service/           ← Payment service
-│    ├─── notification-service/      ← Notification service
-│    └─── search-service/            ← Search service
-├─── .env                           ← Environment variables
-├─── docker-compose.yml             ← Docker services
-├─── README.md                      ← Project README
-└─── package.json
-
-# Roadmap
-* Project Planning
-* PRD
-* SRS
-* HLD
-* LLD
-* Project Setup
-* API Gateway
-* User Service
-* Product Service
-* Cart Service
-* Order Service
-* Payment Service
-* Review Service
-* Notification Service
-* React Frontend
-* Docker
-* Deployment
+# Key Features
+* Microservices Architecture: Independent services for authentication, user management, products,inventory, and orders.
+* Centralized API Gateway: Single entry point with dynamic request routing and centralized middleware.
+* Role-Based Access Control (RBAC): Role-based authorization foundation to control access to protected resources.
+* Inter-Service Communication: HTTP-based communication between microservices using Axios.
+* Global Error Handling: Centralized error-handling middleware with consistent API responses.
