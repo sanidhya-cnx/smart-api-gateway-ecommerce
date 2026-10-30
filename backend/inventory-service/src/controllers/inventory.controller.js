@@ -76,10 +76,32 @@ const deleteInventory = asyncHandler(async (req, res) => {
   });
 });
 
+const initializeInventory = asyncHandler(async (req, res) => {
+  const { productId } = req.body;
+
+  if (!productId) {
+    return res.status(400).json({
+      success: false,
+      message: "productId is required"
+    });
+  }
+
+  const inventory = await inventoryService.initializeInventory(
+    productId
+  );
+
+  return res.status(200).json({
+    success: true,
+    message: "Inventory initialized successfully",
+    data: inventory
+  });
+});
+
 module.exports = {
   createInventory,
   getAllInventory,
   getInventoryByProductId,
   updateInventory,
-  deleteInventory
+  deleteInventory,
+  initializeInventory
 };

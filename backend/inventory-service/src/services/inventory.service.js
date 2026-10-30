@@ -27,10 +27,30 @@ const deleteInventory = async (productId) => {
   return Inventory.findOneAndDelete({ productId });
 };
 
+const initializeInventory = async (productId) => {
+  return Inventory.findOneAndUpdate(
+    { productId },
+    {
+      $setOnInsert: {
+        productId,
+        quantity: 0,
+        reservedQuantity: 0
+      }
+    },
+    {
+      upsert: true,
+      new: true,
+      runValidators: true,
+      setDefaultsOnInsert: true
+    }
+  );
+};
+
 module.exports = {
   createInventory,
   getAllInventory,
   getInventoryByProductId,
   updateInventory,
-  deleteInventory
+  deleteInventory,
+  initializeInventory
 };
