@@ -97,11 +97,57 @@ const initializeInventory = asyncHandler(async (req, res) => {
   });
 });
 
+const reserveStock = asyncHandler(async (req, res) => {
+  const { productId, quantity } = req.body;
+
+  if (!productId || !Number.isInteger(quantity) || quantity <= 0) {
+    return res.status(400).json({
+      success: false,
+      message: "Valid productId and quantity are required"
+    });
+  }
+
+  const inventory = await inventoryService.reserveStock(
+    productId,
+    quantity
+  );
+
+  res.status(200).json({
+    success: true,
+    message: "Stock reserved successfully",
+    data: inventory
+  });
+});
+
+const releaseStock = asyncHandler(async (req, res) => {
+  const { productId, quantity } = req.body;
+
+  if (!productId || !Number.isInteger(quantity) || quantity <= 0) {
+    return res.status(400).json({
+      success: false,
+      message: "Valid productId and quantity are required"
+    });
+  }
+
+  const inventory = await inventoryService.releaseStock(
+    productId,
+    quantity
+  );
+
+  res.status(200).json({
+    success: true,
+    message: "Stock released successfully",
+    data: inventory
+  });
+});
+
 module.exports = {
   createInventory,
   getAllInventory,
   getInventoryByProductId,
   updateInventory,
   deleteInventory,
-  initializeInventory
+  initializeInventory,
+  releaseStock,
+  reserveStock
 };

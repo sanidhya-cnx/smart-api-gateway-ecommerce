@@ -46,11 +46,70 @@ const initializeInventory = async (productId) => {
   );
 };
 
+const reserveStock = async (productId, requestedQuantity) => {
+  const inventory = await Inventory.findOneAndUpdate(
+    {
+      productId,
+      $expr: {
+        $gte: [
+          { $subtract: ["$quantity", "$reservedQuantity"] },
+          requestedQuantity
+        ]
+      }
+    },
+    {
+      $inc: {
+        reservedQuantity: requestedQuantity
+      }
+    },
+    {
+      new: true,
+      runValidators: true
+    }
+  );
+
+  if (!inventory) {
+    const error = new Error("Insufficient stock or inventory not found");
+    error.statusCode = 409;
+    throw error;
+  }
+
+  return inventory;
+};
+
+const releaseStock = async (productId, requestedQuantity) => {
+  const inventory = await Inventory.findOneAndUpdate(
+    {
+      productId,
+      reservedQuantity: { $gte: requestedQuantity }
+    },
+    {
+      $inc: {
+        reservedQuantity: -requestedQuantity
+      }
+    },
+    {
+      new: true,
+      runValidators: true
+    }
+  );
+
+  if (!inventory) {
+    const error = new Error("Unable to release reserved stock");
+    error.statusCode = 409;
+    throw error;
+  }
+
+  return inventory;
+};
+
 module.exports = {
   createInventory,
   getAllInventory,
   getInventoryByProductId,
   updateInventory,
   deleteInventory,
-  initializeInventory
+  initializeInventory,
+  reserveStock,
+  releaseStock
 };
